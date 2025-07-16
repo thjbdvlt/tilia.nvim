@@ -5,7 +5,7 @@ local function new(before)
   local x, y, cursor_x
   if before == false then
     x = 0
-    y = 4
+    y = 2
     cursor_x = 1
   else
     x = -1

@@ -15,17 +15,9 @@ end
 local function sort_by_date(d1, d2)
   if d1 == d2 then
     return nil
-  elseif d1.year > d2.year then
+  elseif d1.time > d2.time then
     return false
-  elseif d1.year < d2.year then
-    return true
-  elseif d1.month > d2.month then
-    return false
-  elseif d1.month < d2.month then
-    return true
-  elseif d1.day > d2.day then
-    return false
-  elseif d1.day < d2.day then
+  elseif d2.time < d1.time then
     return true
   else
     return nil

@@ -10,16 +10,17 @@ syn match TiliaToDefine "\.\.\." containedin=TiliaTodefineLine contained
 syn match TiliaDue "@[-.0-9]\+" containedin=TiliaUndone contained
 syn match TiliaPriority "!\+" containedin=TiliaUndone contained
 syn match TiliaPriority "?\+" containedin=TiliaUndone contained
-syn region TiliaProject start="^\*" end="$"
-syn match TiliaProject "\*.*" containedin=TiliaTree,TiliaUndone contained
-syn match TiliaProjectSign '\*' containedin=TiliaProject contained
+syn region TiliaProject start="^/" end="$"
+syn match TiliaProjectSign '/' containedin=TiliaProject contained
 syn match TiliaDueSign '@' containedin=TiliaDue contained
-syn region TiliaTree start="<" end="$" containedin=TiliaUndone keepend contains=TiliaTreeSign
-syn match TiliaTreeSign '<'
+syn region TiliaTree start="|" end="$" containedin=TiliaUndone keepend contains=TiliaTreeSign
+syn match TiliaTreeSign '|'
 syn match TiliaTag '\s\zs:[:[:lower:][:upper:]]\+' containedin=TiliaUndone contained
 syn match TiliaTagSign ':' containedin=TiliaTag contained
-syn match TiliaError "^ \+\*"
-syn region TiliaComment start="^ *[^- *]" end="$" oneline
+syn match TiliaError "^ \+/"
+syn region TiliaComment start="^ *[^- /x]" end="$" oneline
+syn match TiliaProject "/[^/]\+/$" containedin=TiliaTree,TiliaUndone contained
+syn match TiliaProjectSign "/" containedin=TiliaProject contained
 
 hi default link TiliaUndone Normal
 hi default link TiliaDone NonText
@@ -33,6 +34,7 @@ hi default link TiliaPriority Operator
 hi default link TiliaProject Title
 hi default link TiliaProjectSign TiliaSignUndone
 hi default link TiliaTreeSign TiliaSignUndone
+hi default link TiliaNumber Statement
 hi default link TiliaDueSign TiliaSignUndone
 hi default link TiliaTagSign TiliaSignUndone
 hi default link TiliaTag Special

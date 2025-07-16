@@ -44,7 +44,7 @@ Syntax is mostly based on common prose writing practices:
 - Priority is signaled using `!` outside comments and strings. A task's priority is equal to the number of exclams it contains. Thus, for a very high priority task, you can use `- pay rent!!!!!!!!`.
 - Negative priority is signaled using `?`, with same logic as `!`.
 - Due dates have the format `@d.m.y`. If year is omitted, it's considered to be the current year - `@2.7` is equal to `@02.07.2025`.
-- Lines starting with `*` are project headers.
+- Lines starting with `/` are project headers.
 
 Upon that, there are two other highlighting groups, made for todo lists that implies names and titles, but that has no function:
 
@@ -55,7 +55,7 @@ Upon that, there are two other highlighting groups, made for todo lists that imp
 The default folding method is `indent`. Therefore, if you use project, it's convenient to indent each task under the project:
 
 ```txt
-* Build a table
+/ Build a table
     - :buy or find wood
     - borrow tools
     - draw the table
@@ -85,8 +85,12 @@ To use directly __Tilia__ from command line, just use a bash functions:
 ```bash
 # in ~/.bash_aliases
 tl() { nvim -c "Tilia list ${*}"; }
-ta() { nvim -c "Tilia add ${*}"; }
+ta() { nvim --headless -c "Tilia add ${*}"; echo; } # Empty echo to add a newline
 ```
+
+# Dependency
+
+- [lua-iconv](https://github.com/lunarmodules/lua-iconv)
 
 # Configuration
 

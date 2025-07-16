@@ -2,75 +2,31 @@ local sort = require "tilia.sort"
 local opts = require "tilia.opts"
 local util = require "tilia.util"
 local parse = require "tilia.parse"
+local window = require "tilia.window"
+local open = require "tilia.open"
+local conv = require "tilia.conv"
 
-local function float_tasks(tasks, search)
-  local buf = vim.api.nvim_create_buf(false, true)
-  if opts.show_tree == true then
-    for i = 1, #tasks do
-      tasks[i].text = tasks[i].text .. tasks[i].tree
-    end
-  else
-  end
-  if search ~= nil then
-    local filtered_tasks = {}
-    for i = 1, #tasks do
-      if util.match(tasks[i].text, search) then
-        table.insert(filtered_tasks, tasks[i])
-      end
-    end
-    tasks = filtered_tasks
-  else
-  end
-  local lines = {}
-  for i = 1, #tasks do
-    table.insert(lines, tasks[i].text)
-  end
-  vim.api.nvim_buf_set_lines(buf, 0, 1, true, lines)
-  local float_win_config
-  if type(opts.float_win_config) == "function" then
-    float_win_config = opts.float_win_config()
-  else
-    float_win_config = opts.float_win_config
-  end
-  local win = vim.api.nvim_open_win(buf, true, float_win_config)
-  vim.api.nvim_buf_set_option(buf, "ft", opts.ft)
-  vim.api.nvim_buf_set_option(buf, "wrap", opts.float_wrap)
-  vim.api.nvim_buf_set_option(buf, "modifiable", false)
-  vim.api.nvim_buf_set_keymap(buf, "n", opts.map.quit, "", {
-    callback = function()
-      vim.api.nvim_buf_delete(buf, { force = true })
-    end
-  })
-  vim.api.nvim_buf_set_keymap(buf, "n", opts.map.open, "", {
-    callback = function()
-      local row = vim.api.nvim_win_get_cursor(0)[1]
-      vim.api.nvim_buf_delete(buf, { force = true })
-      vim.cmd.edit(tasks[row].file)
-      vim.api.nvim_win_set_cursor(0, { tasks[row].linenr, 0 })
-      vim.cmd.normal(opts.after_open)
-    end
-  })
-  return win
-end
 
-return function(search)
+local function parse_tasks()
+  -- Default due date is when the sun will die in 5 billion years
+  local default_due = os.time({ year = 5000000000, month = 99, day = 99, s = "" })
   local state = {
-    year = os.date("*t", os.time()).year,
-    -- Default due date is when the sun will die in 5 billion years
-    no_due = { year = 5000000000, month = 99, day = 99, s = "" },
+    year = util.curyear(),
+    no_due = { time = default_due, s = "" },
     project = "",
     tree = {},
     tree_due = {},
     priority = nil,
+    tree_priority = {},
   }
-  local output = assert(io.popen(opts.cmd_find_todo_files))
+  local output = io.popen(opts.cmd_find_todo_files)
+  if not output then return {} end
   local tasks = {}
   for file in output:lines() do
     state.project = ""
     state.tree = {}
-    local f = assert(io.open(file))
     local n = 0
-    for l in f:lines() do
+    for l in io.lines(file) do
       n = n + 1
       local task = parse.parse_line(l, state)
       if task ~= nil then
@@ -79,14 +35,55 @@ return function(search)
         table.insert(tasks, task)
       end
     end
-    f:close()
   end
   output:close()
-  if search[1] == "!" then
-    search[1] = ""
+  return tasks
+end
+
+local function filter(tasks, searches)
+  if opts.iconv_search then
+    for i, s in ipairs(searches) do
+      searches[i] = conv(s)
+    end
+  end
+  if searches then
+    local filtered_tasks = {}
+    for i = 1, #tasks do
+      local s = vim.fn.tolower(tasks[i].text)
+      if opts.iconv_search then
+        s = conv(s)
+      end
+      if util.match(s, searches) then
+        table.insert(filtered_tasks, tasks[i])
+      end
+    end
+    tasks = filtered_tasks
+  end
+  return tasks
+end
+
+return function(searches)
+  local tasks = parse_tasks()
+  if searches[1] == "!" then
+    searches[1] = ""
     table.sort(tasks, sort.sort_priority_date)
   else
     table.sort(tasks, sort.sort_date_priority)
   end
-  float_tasks(tasks, search)
+  tasks = filter(tasks, searches)
+  if not tasks[1] then
+    print("No task found.")
+    return
+  elseif not tasks[2] then
+    open(tasks[1])
+    return
+  end
+  local lines = {}
+  for i = 1, #tasks do
+    table.insert(lines, tasks[i].text)
+  end
+  local buf, win = window.list(lines)
+  window.map_q(buf)
+  window.map_open(buf, tasks)
+  return win
 end
