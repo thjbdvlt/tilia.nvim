@@ -11,25 +11,28 @@ function M.get_new_char(c)
   end
 end
 
--- Get indent length and first char
-function M.get_indent(s)
-  for i = 1, #s do
-    local char = string.sub(s, i, i)
-    if char ~= " " then
-      return i - 1, char
-    end
+function M.get_priority_from_string(s)
+  s = s:gsub('"[^"]+"', ""):gsub("%([^%)]+%)", "")
+  local priority = M.count(s, "!")
+  if priority ~= 0 then
+    return priority
   end
-  return 0, ""
+  return -M.count(s, "?")
 end
 
-function M.count(s, char)
-  local n = 0
-  for i = 1, #s do
-    if string.sub(s, i, i) == char then
-      n = n + 1
-    end
+-- Get indent length and first char
+function M.get_indent(s)
+  local indent, first_char = s:match("^( *)(.)")
+  if indent then
+    return indent:len(), first_char
   end
-  return n
+  return 0, first_char
+end
+
+-- https://stackoverflow.com/questions/11152220
+-- /counting-number-of-string-occurrences
+function M.count(s, c)
+  return select(2, string.gsub(s, c, ""))
 end
 
 function M.match(text, searches)
@@ -52,6 +55,7 @@ function M.match(text, searches)
 end
 
 function M.get_priority_from_tree(indent, state)
+  -- for i=indent-1, 0, -1 do
   for i=indent-1, 0, -1 do
     local p = state.tree_priority[i]
     if p ~= nil then

@@ -10,6 +10,7 @@ syn match TodoToDefine "\.\.\." containedin=TodoTodefineLine contained
 syn region TodoHeader start="^\s*[*#]" end="$"
 syn match TodoDue "@[-.0-9]\+" containedin=TodoUndone contained
 syn match TodoPriority "!\+" containedin=TodoUndone contained
+syn match TodoPriority "?\+" containedin=TodoUndone contained
 syn match TodoProject "\*.*" containedin=TodoTree,TodoUndone
 syn match TodoProjectSign '\*' containedin=TodoProject contained
 syn match TodoDueSign '@' containedin=TodoDue contained

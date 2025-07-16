@@ -23,8 +23,7 @@ local function float_tasks(tasks, search)
   end
   local lines = {}
   for i = 1, #tasks do
-    local line = "- " .. tasks[i].text
-    table.insert(lines, line)
+    table.insert(lines, tasks[i].text)
   end
   vim.api.nvim_buf_set_lines(buf, 0, 1, true, lines)
   local float_win_config
@@ -85,9 +84,9 @@ return function(search)
   output:close()
   if search[1] == "!" then
     search[1] = ""
-    table.sort(tasks, sort.sort2)
+    table.sort(tasks, sort.sort_priority_date)
   else
-    table.sort(tasks, sort.sort1)
+    table.sort(tasks, sort.sort_date_priority)
   end
   float_tasks(tasks, search)
 end

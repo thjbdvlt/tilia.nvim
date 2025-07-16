@@ -43,7 +43,7 @@ local function sort_by_priority(p1, p2)
   end
 end
 
-function M.sort1(t1, t2)
+function M.sort_date_priority(t1, t2)
   local x
   x = sort_by_date(t1.due, t2.due)
   if x ~= nil then return x end
@@ -54,7 +54,7 @@ function M.sort1(t1, t2)
   return false
 end
 
-function M.sort2(t1, t2)
+function M.sort_priority_date(t1, t2)
   local x
   x = sort_by_priority(t1.priority, t2.priority)
   if x ~= nil then return x end

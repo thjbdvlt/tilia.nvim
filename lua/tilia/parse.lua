@@ -32,8 +32,7 @@ function M.parse_line(line, state)
   elseif sign ~= "-" then
     return nil
   end
-  local text = string.gsub(line, "^ *- *", "")
-  -- Due date
+  local text = line:sub(indent+1, #line)
   local start_index, end_index = string.find(line, "@[%d%.]+")
   local due
   if start_index ~= nil then
@@ -46,13 +45,11 @@ function M.parse_line(line, state)
       due = state.no_due
     end
   end
-  -- Tree representation
   local tree
   if opts.show_tree == true then
     tree = tree_to_line.tree_to_string(indent, state)
   end
-  -- Priority
-  local priority = util.count(text, "!")
+  local priority = util.get_priority_from_string(text)
   if priority == 0 then
     priority = util.get_priority_from_tree(indent, state)
   end

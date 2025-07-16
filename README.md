@@ -41,7 +41,8 @@ The keymap __do_recursive__ marks as *done* (i.e. `x`) current task and all subt
 Syntax is mostly based on common prose writing practices:
  
 - Parentheses are comments, rendered as such.
-- Priority is signaled using `!` outside comments. A task's priority is equal to the number of exclams it contains. Thus, for a very high priority task, you can use `- pay rent!!!!!!!!`.
+- Priority is signaled using `!` outside comments and strings. A task's priority is equal to the number of exclams it contains. Thus, for a very high priority task, you can use `- pay rent!!!!!!!!`.
+- Negative priority is signaled using `?`, with same logic as `!`.
 - Due dates have the format `@d.m.y`. If year is omitted, it's considered to be the current year - `@2.7` is equal to `@02.07.2025`.
 - Lines starting with `*` are project headers.
 
