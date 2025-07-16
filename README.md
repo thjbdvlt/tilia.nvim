@@ -51,6 +51,20 @@ Upon that, there are two other highlighting groups, made for todo lists that imp
 - Things in double quotes are considered titles and are colorized (by default in blue).
 - Words directly preceded by colons, like `:this` are `:tags` (the colon must be preceded by space).
 
+The default folding method is `indent`. Therefore, if you use project, it's convenient to indent each task under the project:
+
+```txt
+* Build a table
+    - :buy or find wood
+    - borrow tools
+    - draw the table
+        - :buy paper
+        - look at other tables to get ideas
+            - buy a table magazine
+            - watch a lot of movies :movies
+                - look for SF movies with tables :sf
+```
+
 # Configuration
 
 You probably want to associate some extension (e.g. `.tilia` or `.todo`) with the plugin and its filetype (`tilia`):

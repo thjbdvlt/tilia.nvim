@@ -14,6 +14,7 @@ return {
     toggle = "zd", -- Toggle from todo ("-") to done ("x")
     do_recursive = "zD", -- Mark current task and recursive subtasks as done
   },
+  after_open = 'zv', -- Executed when you open a task. Suggested: "zv" or "zO"
   show_tree = true, -- Show whole tree representation in list window
   tree_truncate = nil, -- Truncate tree representation (nil or number)
   float_wrap = false, -- Wrap text in list window

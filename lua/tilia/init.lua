@@ -35,7 +35,12 @@ local cmds = {
 local function Cmd(args)
   local cmd_name = args.fargs[1]
   table.remove(args.fargs, 1)
-  return cmds[cmd_name](args.fargs)
+  local fn = cmds[cmd_name]
+  if fn then
+    fn(args.fargs)
+  else
+    vim.notify("Unkown command: " .. cmd_name, 1, {})
+  end
 end
 
 function M.setup()

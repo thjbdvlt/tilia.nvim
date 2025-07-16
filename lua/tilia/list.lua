@@ -27,9 +27,11 @@ local function float_tasks(tasks, search)
     table.insert(lines, line)
   end
   vim.api.nvim_buf_set_lines(buf, 0, 1, true, lines)
-  local float_win_config = opts.float_win_config
-  if type(float_win_config) == "function" then
-    float_win_config = float_win_config()
+  local float_win_config
+  if type(opts.float_win_config) == "function" then
+    float_win_config = opts.float_win_config()
+  else
+    float_win_config = opts.float_win_config
   end
   local win = vim.api.nvim_open_win(buf, true, float_win_config)
   vim.api.nvim_buf_set_option(buf, "ft", opts.ft)
@@ -46,6 +48,7 @@ local function float_tasks(tasks, search)
       vim.api.nvim_buf_delete(buf, { force = true })
       vim.cmd.edit(tasks[row].file)
       vim.api.nvim_win_set_cursor(0, { tasks[row].linenr, 0 })
+      vim.cmd.normal(opts.after_open)
     end
   })
   return win
