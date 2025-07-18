@@ -102,7 +102,7 @@ ta() { nvim --headless -c "Tilia add ${*}"; echo; } # Empty echo to add a newlin
 
 # Dependency
 
-- [lua-iconv](https://github.com/lunarmodules/lua-iconv)
+- (optional) [lua-iconv](https://github.com/lunarmodules/lua-iconv)
 
 # Configuration
 
