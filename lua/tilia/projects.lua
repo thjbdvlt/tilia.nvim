@@ -115,7 +115,9 @@ function M.find(search)
   local projects = M.list(search)
   local n = #projects
   if n == 0 then
-    print("Project not found.")
+    if search then
+      print("Project not found.")
+    end
     return
   elseif n == 1 then
     return projects[1]
@@ -228,7 +230,7 @@ function M.projects()
   local uniq_prefixes = find_uniq_prefixes(names)
   for i, t in ipairs(projects) do
     local id_len = uniq_prefixes[i]
-    t.id = { col = 0, end_col = 1 + id_len }
+    t.id = { col = 0, end_col = id_len }
     t.linenr = t.row -- Position in file
     t.row = i - 1    -- Position in floating window
     table.insert(marks, t)
