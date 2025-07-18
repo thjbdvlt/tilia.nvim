@@ -23,7 +23,7 @@ local function set_keymaps()
   end
 end
 
-local cmds = {
+M.cmd = {
   list = require "tilia.list",
   add = require "tilia.add",
   clean = require "tilia.clean",
@@ -33,7 +33,7 @@ local cmds = {
 local function Cmd(args)
   local cmd_name = args.fargs[1]
   table.remove(args.fargs, 1)
-  local fn = cmds[cmd_name]
+  local fn = M.cmd[cmd_name]
   if fn then
     fn(args.fargs)
   else

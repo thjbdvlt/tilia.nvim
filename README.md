@@ -23,7 +23,13 @@ Due dates are inherited:
 
 Arguments can be passed to __list__ to filter searches. If first argument is an exclam sign, the tasks are sorted by priority over due date. If an argument is `not`, then the following argument is a reverse search term. (There is no `or` keyword.)
 
-Command __add__ (`:Tilia add <desc...>`) append a task to a file.
+Command __add__ (`:Tilia add <desc...>`) append a task to a project (if the description starts with "/" followed by a project search) or to a default file (defined in opts, see below).
+
+<!-- TODO: Screenshot of command "add" -->
+
+Command __pro__ either jump to a project (if an argument) or list all projects and their status: next due date, highest priority, number of tasks.
+
+<!-- TODO: Screenshot of command "pro" -->
 
 Command __clean__ (`:Tilia clean`) remove all done tasks from the current file.
 
@@ -40,17 +46,16 @@ The keymap __do_recursive__ marks as *done* (i.e. `x`) current task and all subt
 
 Syntax is mostly based on common prose writing practices:
  
-- Parentheses are comments, rendered as such.
-- Priority is signaled using `!` outside comments and strings. A task's priority is equal to the number of exclams it contains. Thus, for a very high priority task, you can use `- pay rent!!!!!!!!`.
-- Negative priority is signaled using `?`, with same logic as `!`.
-- Due dates have the format `@d.m.y`. If year is omitted, it's considered to be the current year - `@2.7` is equal to `@02.07.2025`.
-- Lines starting with `/` are project headers.
+- Priority is signaled using `!` outside comments and strings. A task's priority is equal to the number of exclams it contains. Thus, for a very high priority task, you can use `- pay rent!!!!!!!!`. Negative priority is signaled using `?`, with same logic as `!`.
+- Due dates have the format `@%d.%m.%y`. If year is omitted, it's considered to be the current year - `@2.7` is equal to `@02.07.25`.
+- Lines starting with `/` are project headers. Any indenting tasks below are included in the project, until a non-indented line is encountered.
+- Things in double quotes are considered titles and are colorized (by default in blue). Signs `?`and `!` in quotes are not used to define priority.
+- Parentheses are comments, rendered as such. Their content are not parsed (priority or due) neither used for searches.
 
-Upon that, there are two other highlighting groups, made for todo lists that implies names and titles, but that has no function:
+There are also two highlighted groups that have not (yet) special effect:
 
-- Words starting with an uppercase letter are considered names and (by default) rendered in bold.
-- Things in double quotes are considered titles and are colorized (by default in blue).
 - Words directly preceded by colons, like `:this` are `:tags` (the colon must be preceded by space).
+- Words starting with an uppercase letter are considered names and (by default) rendered in bold. Has absolutely no effect for now.
 
 The default folding method is `indent`. Therefore, if you use project, it's convenient to indent each task under the project:
 
@@ -76,6 +81,13 @@ vim.api.nvim_create_autocmd({'BufEnter'}, {
     pattern = "*.todo", 
     command = "setlocal ft=tilia"
 })
+```
+
+If commands are too long to type, you may want to use `:cnoabbrev`:
+
+```vim
+:cnoreabbrev tl Tilia list
+:cnoreabbrev tp Tilia pro
 ```
 
 # From command line
