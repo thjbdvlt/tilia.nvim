@@ -21,7 +21,11 @@ Due dates are inherited:
         - this subsubtask inherits too
 ```
 
-Arguments can be passed to __list__ to filter searches. If first argument is an exclam sign, the tasks are sorted by priority over due date. If an argument is `not`, then the following argument is a reverse search term. (There is no `or` keyword.)
+Arguments can be passed to __list__ to filter searches. If first argument is an exclam sign, the tasks are sorted by priority over due date. If an argument is `not`, then the following argument is a reverse search term. (There is no `or` keyword.) If you want to list tasks under a project named *build a table*, skipping low-priority items:
+
+```vim
+:Tilia list /table not ?
+```
 
 Command __add__ (`:Tilia add <desc...>`) append a task to a project (if the description starts with "/" followed by a project search) or to a default file (defined in opts, see below).
 
@@ -97,7 +101,8 @@ To use directly __Tilia__ from command line, just use a bash functions:
 ```bash
 # in ~/.bash_aliases
 tl() { nvim -c "Tilia list ${*}"; }
-ta() { nvim --headless -c "Tilia add ${*}"; echo; } # Empty echo to add a newline
+tp() { nvim -c "Tilia pro ${*}"; }
+ta() { nvim --headless -c "Tilia add ${*}"; echo; }
 ```
 
 # Dependency
