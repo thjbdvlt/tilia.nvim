@@ -54,7 +54,7 @@ return function(args)
     project = pro.find(t.project)
     if not project then return end
     file = project.file
-    row = project.row + 1
+    row = project.row
     msg = "Task added to project " .. project.name
   end
   write(file, row, serialize(t))
