@@ -53,10 +53,7 @@ function M.parse_line(line, state)
       due = state.no_due
     end
   end
-  local priority = parse_priority(text)
-  if priority == 0 then
-    priority = tr.get_from_tree(indent, state, "tree_priority")
-  end
+  local priority = (parse_priority(text) or 0) + (tr.get_from_tree(indent, state, "tree_priority") or 0)
   state.tree[indent] = text
   state.tree_due[indent] = due
   state.tree_priority[indent] = priority
