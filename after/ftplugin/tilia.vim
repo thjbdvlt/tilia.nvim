@@ -1,2 +1,2 @@
 setl shiftwidth=2
-set foldmethod=indent
+setl foldmethod=indent
