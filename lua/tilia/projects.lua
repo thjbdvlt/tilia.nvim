@@ -4,6 +4,8 @@ local window = require "tilia.window"
 local open = require "tilia.open"
 local conv = require "tilia.conv"
 
+local parse = require "tilia.parse"
+
 local M = {}
 
 local function common_prefix_len(a, b)
@@ -38,7 +40,9 @@ end
 
 local function parse_projects()
   local output = io.popen(opts.cmd_find_todo_files)
-  local current_year = util.curyear()
+  local now = os.time()
+  local current_year = util.year(now)
+  local state = {year = current_year}
   if not output then return {} end
   local projects = {}
   local pro
@@ -65,11 +69,9 @@ local function parse_projects()
       elseif sign == "-" and pro then
         local s = line:gsub('"[^"]+"', ""):gsub("%([^%)]+%)", "")
         pro.n = pro.n + 1
-        local day, month, year = s:match("@(%d+)%.(%d+)%.?(%d*)")
-        if day then
-          if year == "" then year = current_year end
-          local time = os.time { year = year, month = month, day = day }
-          if not pro.time or time < pro.time then pro.time = time end
+        local time = parse.parse_date(s, state)
+        if time then
+          pro.time = math.min(time.time, pro.time or now)
         end
         if s:find("%!") then
           local priority = util.count(s, "!")

@@ -34,8 +34,12 @@ function M.escape_regex(s)
   return s:gsub("[%[%]%(%)%{%}%.%?%+%*%|%$%^%:%-%\\]", "\\%1")
 end
 
+function M.year(time)
+  return os.date("*t", time).year
+end
+
 function M.curyear()
-  return os.date("*t", os.time()).year
+  return M.year(os.time())
 end
 
 return M

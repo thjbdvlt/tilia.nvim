@@ -15,14 +15,16 @@ local function parse_priority(s)
   end
 end
 
-local function parse_date(s, state)
+function M.parse_date(s, state)
   local day, month, year = s:match("(%d+)%.(%d+)%.?(%d*)")
   if not day or not month then return nil end
   local fmt
-  if year == '' or tonumber(year) == state.year then
+  local yearlen = year:len()
+  if yearlen == 0 or tonumber(year) == state.year then
     year = state.year
     fmt = " @%d.%m"
   else
+    if year:len() == 2 then year = "20" .. year end
     fmt = " @%d.%m.%y"
   end
   local time = os.time({ day = day, month = month, year = year })
@@ -44,7 +46,7 @@ function M.parse_line(line, state)
   local start_index, end_index = line:find("@[%d%.]+")
   local due
   if start_index ~= nil then
-    due = parse_date(line:sub(start_index, end_index), state)
+    due = M.parse_date(line:sub(start_index, end_index), state)
   else
     due = tr.get_from_tree(indent, state, "tree_due")
     if due ~= nil then
